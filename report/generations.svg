@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="320" viewBox="0 0 760 320" font-family="monospace" font-size="12">
+<rect width="760" height="320" fill="#ffffff"/>
+<text x="70" y="22" font-size="14" fill="#111111">held-out recall per arm — with each arm's index cost printed beneath</text>
+<rect x="90" y="89.6" width="90" height="134.4" fill="#6b7280" opacity="0.9"/>
+<text x="135" y="81.6" text-anchor="middle" fill="#111111" font-weight="bold">8/10</text>
+<text x="135" y="242" text-anchor="middle" fill="#374151">gen0-frozen</text>
+<text x="135" y="258" text-anchor="middle" fill="#6b7280">index 160 tok</text>
+<rect x="255" y="56.0" width="90" height="168.0" fill="#0f766e" opacity="0.9"/>
+<text x="300" y="48.0" text-anchor="middle" fill="#111111" font-weight="bold">10/10</text>
+<text x="300" y="242" text-anchor="middle" fill="#374151">repair</text>
+<text x="300" y="258" text-anchor="middle" fill="#6b7280">index 185 tok</text>
+<rect x="420" y="89.6" width="90" height="134.4" fill="#b45309" opacity="0.9"/>
+<text x="465" y="81.6" text-anchor="middle" fill="#111111" font-weight="bold">8/10</text>
+<text x="465" y="242" text-anchor="middle" fill="#374151">placebo</text>
+<text x="465" y="258" text-anchor="middle" fill="#6b7280">index 148 tok</text>
+<rect x="585" y="56.0" width="90" height="168.0" fill="#b91c1c" opacity="0.9"/>
+<text x="630" y="48.0" text-anchor="middle" fill="#111111" font-weight="bold">10/10</text>
+<text x="630" y="242" text-anchor="middle" fill="#374151">goodhart-bloat</text>
+<text x="630" y="258" text-anchor="middle" fill="#6b7280">index 215 tok</text>
+<text x="70" y="300" fill="#991b1b">scripted repairer — proves the loop and the failure signal, never model capability</text>
+</svg>

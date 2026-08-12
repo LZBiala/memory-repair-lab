@@ -1,0 +1,28 @@
+{
+  "corpus": "milldale-memory",
+  "description": "Ten Milldale memory notes. Two carry deliberately lazy hooks (town-history: 'assorted notes'; old-charter: 'more notes') — the patients this loop exists to repair. Tasks come in PAIRS of phrasings: repair_visible (the loop may see its failures) and held_out (sealed before generation zero; the measurement). Ground-truth 'relevant' names the target note.",
+  "notes": [
+    {"name": "bakery-hours", "hook": "Opening hours for the Milldale bakery on Main Street", "body": "Opens 7am weekdays at 21 Main Street.\nCloses 3pm. Saturday: 8am to 1pm."},
+    {"name": "bike-repair", "hook": "The bike shop on Forge Alley: services and turnaround", "body": "Repairs with a two-day turnaround on Forge Alley.\nTubes and brake work done same day."},
+    {"name": "bus-route-7", "hook": "Bus route 7 times, replacing route 4", "body": "Route 7 hourly from the square, 7am to 9pm."},
+    {"name": "clinic-hours", "hook": "Hours for the Milldale walk-in clinic", "body": "Open 9am to 5pm Monday to Friday."},
+    {"name": "farmers-market", "hook": "The Saturday farmers market on the town square", "body": "Saturdays 8am to noon on the square.\nProduce, bread, and cider stalls."},
+    {"name": "harvest-festival", "hook": "The autumn harvest festival: dates and events on the square", "body": "First weekend of the month, on the square.\nCider pressing and a lantern walk."},
+    {"name": "library-card", "hook": "How to get and renew a Milldale library card", "body": "Bring one piece of mail to the counter.\nRenew every two years, free."},
+    {"name": "riverside-park", "hook": "The riverside park: picnic tables and walking trails", "body": "Picnic tables by the water and two walking trails."},
+    {"name": "town-history", "hook": "assorted notes", "body": "The old mill by the river was founded in 1851 by the Harlan family."},
+    {"name": "civic-record", "hook": "more notes", "body": "The town charter was signed in 1863 at the first town hall."}
+  ],
+  "tasks": [
+    {"id": "t01", "relevant": "bakery-hours", "repair_visible": "When does the bakery open on a weekday morning?", "held_out": "What time can I get bread at the bakery on Thursday?"},
+    {"id": "t02", "relevant": "bike-repair", "repair_visible": "How long does the bike shop take for repairs?", "held_out": "Can the bike shop fix a flat tube quickly?"},
+    {"id": "t03", "relevant": "bus-route-7", "repair_visible": "How often does bus route 7 run from the square?", "held_out": "What are the route 7 bus times?"},
+    {"id": "t04", "relevant": "clinic-hours", "repair_visible": "When is the walk-in clinic open?", "held_out": "What are the clinic hours on Monday?"},
+    {"id": "t05", "relevant": "farmers-market", "repair_visible": "When is the farmers market on the square?", "held_out": "What time does the Saturday market start?"},
+    {"id": "t06", "relevant": "harvest-festival", "repair_visible": "When is the harvest festival held?", "held_out": "What happens at the autumn festival on the square?"},
+    {"id": "t07", "relevant": "library-card", "repair_visible": "How do I renew my library card?", "held_out": "What do I bring to get a library card?"},
+    {"id": "t08", "relevant": "riverside-park", "repair_visible": "Where are the picnic tables in the riverside park?", "held_out": "Which park has walking trails by the water?"},
+    {"id": "t09", "relevant": "town-history", "repair_visible": "When was the old mill by the river founded?", "held_out": "What year did the Harlan family start the mill?"},
+    {"id": "t10", "relevant": "civic-record", "repair_visible": "When was the town charter signed?", "held_out": "What year was the charter signed at the town hall?"}
+  ]
+}

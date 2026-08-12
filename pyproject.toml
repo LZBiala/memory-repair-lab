@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repairlab"
+version = "1.0.0"
+description = "A memory-repair loop on top of a markdown agent wiki: retrieval failures are filed as typed notes, a repair pass rewrites hooks citing the failure record that motivated each edit, and generations are re-measured against a held-out task split - with a placebo arm, a regression gate, and a published Goodhart demonstration. The model never learns; the notes do. Every published number regenerates in CI with zero API keys."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "LZ Biala" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

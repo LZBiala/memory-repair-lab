@@ -1,0 +1,3 @@
+{"action": "ACCEPT", "citation": "fail-t09", "new_hook": "The old mill by the river was founded in 1851 by the Harlan family", "note": "town-history", "old_hook": "assorted notes", "reason": "hook 'assorted notes' carried no retrievable signal; rewritten from the note's own first line"}
+{"action": "ACCEPT", "citation": "fail-t10", "new_hook": "The town charter was signed in 1863 at the first town hall", "note": "civic-record", "old_hook": "more notes", "reason": "hook 'more notes' carried no retrievable signal; rewritten from the note's own first line"}
+{"action": "STOP", "reason": "no remaining repair-visible failures after generation 1"}
