@@ -101,11 +101,12 @@ def render_claims(metrics: Metrics) -> str:
         (
             "| Cited repairs improve HELD-OUT recall "
             f"| **{gen0['hits']}/{gen0['total']} → {mend['hits']}/{mend['total']} "
-            "held-out hits after one repair generation** | held-out phrasings sealed "
-            "before generation zero; a test asserts they never enter repairer input; "
-            "frozen gen-0 replayed in the same run | scripted repairer on "
-            "author-labeled fixtures — proves the loop, an upper bound by "
-            "construction, never model capability |"
+            f"held-out hits (precision {gen0['precision']} → {mend['precision']}) "
+            "after one repair generation** | held-out phrasings sealed "
+            "before generation zero (repair-visible = the fit split); a test asserts "
+            "they never enter repairer input; frozen gen-0 replayed in the same run "
+            "| scripted repairer on author-labeled fixtures — proves the loop, an "
+            "upper bound by construction, never model capability |"
         ),
         (
             "| The failure signal — not editing — does the work "
@@ -126,13 +127,16 @@ def render_claims(metrics: Metrics) -> str:
             f"| **hook-bloat arm: {blo['hits']}/{blo['total']} held-out hits at "
             f"index cost {blo['index_tokens']} tok vs repair arm {mend['hits']}/"
             f"{mend['total']} at {mend['index_tokens']} tok** | an authored strategy "
-            "committed and measured beside the honest one | a demonstration of a "
+            "committed and measured beside the honest one; proxy tokens = chars/4 | "
+            "a demonstration of a "
             "failure mode, not evidence any real improver behaves this way |"
         ),
         (
-            f"| The loop terminates | **stop rule fired: {s['stop_reason']}** | the "
-            "generation loop halts in CI and prints its reason in the ledger | "
-            "plateau on this corpus says nothing about any other corpus |"
+            f"| One repair generation, stated as such | **stop label: "
+            f"{s['stop_reason']}** | the demo runs exactly ONE repair pass by "
+            "construction; the label distinguishes done from budget-exhausted | "
+            "'termination' here is structural, not an enforced property — a real "
+            "multi-generation loop with a K-cycle no-gain stop is Loop 2 work |"
         ),
     ]
     return "\n".join(lines)

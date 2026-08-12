@@ -12,7 +12,7 @@
 <rect x="420" y="89.6" width="90" height="134.4" fill="#b45309" opacity="0.9"/>
 <text x="465" y="81.6" text-anchor="middle" fill="#111111" font-weight="bold">8/10</text>
 <text x="465" y="242" text-anchor="middle" fill="#374151">placebo</text>
-<text x="465" y="258" text-anchor="middle" fill="#6b7280">index 148 tok</text>
+<text x="465" y="258" text-anchor="middle" fill="#6b7280">index 155 tok</text>
 <rect x="585" y="56.0" width="90" height="168.0" fill="#b91c1c" opacity="0.9"/>
 <text x="630" y="48.0" text-anchor="middle" fill="#111111" font-weight="bold">10/10</text>
 <text x="630" y="242" text-anchor="middle" fill="#374151">goodhart-bloat</text>

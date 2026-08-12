@@ -1,7 +1,7 @@
-{"arm": "gen0", "hits": 8, "index_tokens": 160, "kind": "arm", "split": "repair_visible", "total": 10}
-{"arm": "gen0-frozen", "hits": 8, "index_tokens": 160, "kind": "arm", "split": "held_out", "total": 10}
-{"arm": "repair", "hits": 10, "index_tokens": 185, "kind": "arm", "split": "repair_visible", "total": 10}
-{"arm": "repair", "hits": 10, "index_tokens": 185, "kind": "arm", "split": "held_out", "total": 10}
-{"arm": "placebo", "hits": 8, "index_tokens": 148, "kind": "arm", "split": "held_out", "total": 10}
-{"arm": "goodhart-bloat", "hits": 10, "index_tokens": 215, "kind": "arm", "split": "held_out", "total": 10}
+{"arm": "gen0", "hits": 8, "index_tokens": 160, "kind": "arm", "precision": "0.89", "split": "repair_visible", "total": 10}
+{"arm": "gen0-frozen", "hits": 8, "index_tokens": 160, "kind": "arm", "precision": "0.80", "split": "held_out", "total": 10}
+{"arm": "repair", "hits": 10, "index_tokens": 185, "kind": "arm", "precision": "0.91", "split": "repair_visible", "total": 10}
+{"arm": "repair", "hits": 10, "index_tokens": 185, "kind": "arm", "precision": "0.83", "split": "held_out", "total": 10}
+{"arm": "placebo", "hits": 8, "index_tokens": 155, "kind": "arm", "precision": "0.80", "split": "held_out", "total": 10}
+{"arm": "goodhart-bloat", "hits": 10, "index_tokens": 215, "kind": "arm", "precision": "0.83", "split": "held_out", "total": 10}
 {"accepted": 2, "citation_coverage": "2/2", "kind": "summary", "reverted": 0, "stop_reason": "no remaining repair-visible failures after generation 1"}

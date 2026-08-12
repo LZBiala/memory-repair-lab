@@ -70,9 +70,11 @@ class TestHeadlineNumbers:
         gen0 = arms[("gen0-frozen", "held_out")]
         mend = arms[("repair", "held_out")]
         pla = arms[("placebo", "held_out")]
+        blo = arms[("goodhart-bloat", "held_out")]
         assert f"<b>{gen0['hits']}/{gen0['total']}</b>" in HTML
         assert f"<b>{mend['hits']}/{mend['total']}</b>" in HTML
         assert f"<b>{pla['hits']}/{pla['total']}</b>" in HTML
+        assert f"reaches {blo['hits']}/{blo['total']}" in HTML  # the goodhart prose
 
     def test_honest_section_present(self) -> None:
         assert "Loop 2" in HTML

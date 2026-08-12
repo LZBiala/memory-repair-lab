@@ -59,8 +59,18 @@ class TestHeldOutWall:
     def test_repairer_inputs_pass_the_audit(self) -> None:
         gen0 = evaluate(NOTES, TASKS, "repair_visible", "gen0")
         failures = file_failures(gen0)
-        inputs = [f.observed for f in failures] + [NOTES[f.target].body for f in failures]
+        visible = {t["id"]: t["repair_visible"] for t in TASKS}
+        inputs = (
+            [visible[f.task_id] + " " + f.observed for f in failures]
+            + [NOTES[f.target].body for f in failures]
+            + [NOTES[f.target].hook for f in failures]
+        )
         holdout_isolation_audit(inputs, TASKS)  # must not raise
+
+    def test_audit_is_punctuation_proof(self) -> None:
+        stripped = TASKS[0]["held_out"].rstrip("?")
+        with pytest.raises(LoopError, match="leaked"):
+            holdout_isolation_audit([f"prompt containing {stripped} inside"], TASKS)
 
     def test_repaired_hooks_never_echo_visible_questions(self) -> None:
         gen0 = evaluate(NOTES, TASKS, "repair_visible", "gen0")

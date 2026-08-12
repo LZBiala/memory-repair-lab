@@ -126,7 +126,11 @@ def demo(quiet: bool) -> int:
     emit(f"GEN 1 (repair): repair-visible {mend_visible.hits}/{mend_visible.total}; "
          f"held-out {mend_held.hits}/{mend_held.total}")
 
-    placebo = apply_edits(notes, placebo_edits(notes, budget=len(accepted)))
+    # The placebo arm goes through the SAME regression gate as the repair arm:
+    # the only remaining difference between arms is who chose the targets.
+    placebo, _pl_acc, _pl_rev = regression_gate(
+        notes, placebo_edits(notes, budget=len(accepted)), tasks
+    )
     pla_held = evaluate(placebo, tasks, "held_out", "placebo")
     emit(f"GEN 1 (placebo, blind, same budget): held-out {pla_held.hits}/{pla_held.total}")
 
@@ -152,7 +156,8 @@ def demo(quiet: bool) -> int:
     for ev in (gen0_visible, gen0_held, mend_visible, mend_held, pla_held, blo_held):
         rows.append({
             "kind": "arm", "arm": ev.arm, "split": ev.split, "hits": ev.hits,
-            "total": ev.total, "index_tokens": ev.index_tokens,
+            "total": ev.total, "precision": ev.precision,
+            "index_tokens": ev.index_tokens,
         })
     cited = sum(1 for e in accepted if e.citation.strip())
     rows.append({

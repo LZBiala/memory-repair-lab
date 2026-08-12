@@ -20,6 +20,7 @@ The model never learns; the notes do.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -44,6 +45,7 @@ class ArmEval:
     split: str  # repair_visible | held_out
     hits: int
     total: int
+    precision: str  # correct recalls / total recalls, pin-formatted
     index_tokens: int
     results: tuple[TaskResult, ...]
 
@@ -76,9 +78,12 @@ def evaluate(notes: dict[str, Note], tasks: list[dict[str, str]], split: str, ar
                 hit=t["relevant"] in recalled,
             )
         )
+    n_recalled = sum(len(r.recalled) for r in results)
+    n_correct = sum(1 for r in results if r.hit)
+    precision = f"{n_correct / n_recalled:.2f}" if n_recalled else "n/a"
     return ArmEval(
         arm=arm, split=split,
-        hits=sum(1 for r in results if r.hit), total=len(results),
+        hits=n_correct, total=len(results), precision=precision,
         index_tokens=proxy_tokens(index_text(notes)), results=tuple(results),
     )
 
@@ -107,6 +112,7 @@ def failure_note(record: FailureRecord) -> Note:
         [
             f"task: {record.task_id}",
             f"target: {record.target}",
+            "generation: 0",
             f"question: {record.question}",
             f"observed: {record.observed}",
         ]
@@ -128,6 +134,10 @@ def repair(
     the visible question). Deterministic; one edit per failure."""
     edits = []
     for record in sorted(failures, key=lambda f: f.failure_id):
+        if record.target not in notes:
+            raise LoopError(
+                f"failure {record.failure_id!r} cites missing note {record.target!r}"
+            )
         target = notes[record.target]
         first_line = target.body.split("\n")[0].strip().rstrip(".")
         edits.append(
@@ -149,13 +159,16 @@ def placebo_edits(notes: dict[str, Note], budget: int) -> list[RepairEdit]:
     """The churn arm: SAME edit budget, computed blind — no failure records in
     sight. Deterministic rule: rewrite the hooks of the alphabetically first
     `budget` memory notes to a generic template."""
+    # Same EDIT RULE as the repair arm (first-line rewrite) so the only
+    # difference between arms is the failure signal choosing the targets —
+    # not a weak rule losing to a strong one.
     targets = sorted(n for n, note in notes.items() if note.kind == "memory")[:budget]
     return [
         RepairEdit(
             note=name,
             old_hook=notes[name].hook,
-            new_hook=f"notes filed under {name.replace('-', ' ')}",
-            reason="placebo churn: budget-matched edit, blind to failure records",
+            new_hook=notes[name].body.split("\n")[0].strip().rstrip("."),
+            reason="placebo churn: budget-matched first-line rewrite, blind to failure records",
             citation="placebo-arm",
         )
         for name in targets
@@ -184,6 +197,8 @@ def apply_edits(notes: dict[str, Note], edits: list[RepairEdit]) -> dict[str, No
     for e in edits:
         if not e.reason.strip() or not e.citation.strip():
             raise LoopError(f"uncited or unexplained edit on {e.note!r} refused")
+        if "\n" in e.new_hook or "\r" in e.new_hook or e.new_hook.startswith("---"):
+            raise LoopError(f"hook for {e.note!r} must be a single plain line")
         old = out[e.note]
         out[e.note] = Note(name=old.name, hook=e.new_hook, kind=old.kind, body=old.body)
     return out
@@ -197,11 +212,15 @@ def regression_gate(
     """Accept edits one at a time; replay the FULL repair-visible suite after
     each. An edit that breaks a previously-passing task is reverted with a
     ledgered reason. Returns (final notes, accepted, reverted+reasons)."""
+    # The baseline is RECOMPUTED after every acceptance: an edit must protect
+    # everything passing AT THAT MOMENT, including tasks an earlier edit in
+    # this same batch just fixed. (A batch-start-only baseline let later
+    # collateral edits re-break interim fixes — caught by independent review.)
+    current = dict(before)
     baseline = {
         r.task_id: r.hit
-        for r in evaluate(before, tasks, "repair_visible", "gate-baseline").results
+        for r in evaluate(current, tasks, "repair_visible", "gate-baseline").results
     }
-    current = dict(before)
     accepted: list[RepairEdit] = []
     reverted: list[tuple[RepairEdit, str]] = []
     for edit in edits:
@@ -217,18 +236,29 @@ def regression_gate(
         else:
             current = candidate
             accepted.append(edit)
+            baseline = {r.task_id: r.hit for r in replay.results}
     return current, accepted, reverted
+
+
+_AUDIT_WORD_RE = re.compile(r"[a-z0-9']+")
+
+
+def _normalize(text: str) -> str:
+    return " ".join(_AUDIT_WORD_RE.findall(text.lower()))
 
 
 def holdout_isolation_audit(
     repairer_inputs: list[str], tasks: list[dict[str, str]]
 ) -> None:
     """The held-out wall, enforced: no held-out phrasing may appear in any
-    string the repairer consumed. Raises on breach; a test drives this."""
+    string the repairer consumed. Both sides are punctuation-normalized so a
+    dropped question mark cannot smuggle a phrasing past the audit (a probe
+    proved the naive substring check evadable). Raises on breach."""
+    normalized_inputs = [_normalize(text) for text in repairer_inputs]
     for t in tasks:
-        held = t["held_out"].lower()
-        for text in repairer_inputs:
-            if held in text.lower():
+        held = _normalize(t["held_out"])
+        for text in normalized_inputs:
+            if held and held in text:
                 raise LoopError(f"held-out phrasing for {t['id']} leaked into repairer input")
 
 

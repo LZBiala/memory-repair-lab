@@ -6,5 +6,6 @@ kind: failure
 
 task: t10
 target: civic-record
+generation: 0
 question: When was the town charter signed?
 observed: recalled ['town-history'], needed 'civic-record'
