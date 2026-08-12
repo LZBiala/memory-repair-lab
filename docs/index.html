@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>memory-repair-lab — the model never learns; the notes do</title>
+<style>
+  :root { --ink:#111827; --muted:#6b7280; --bg:#ffffff; --panel:#f8fafc; --line:#e5e7eb;
+    --teal:#0f766e; --amber:#b45309; --red:#b91c1c; --term-bg:#0f172a; --term-ink:#e2e8f0;
+    --term-dim:#94a3b8; --radius:12px; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--ink); line-height:1.6;
+    font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif; }
+  code,pre,.term { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; }
+  .wrap { max-width:980px; margin:0 auto; padding:0 20px; }
+  header.hero { padding:56px 0 40px; border-bottom:1px solid var(--line); }
+  .hero h1 { font-size:2rem; letter-spacing:-0.02em; }
+  .hero h1 span { color:var(--teal); }
+  .hero p.tag { font-size:1.12rem; color:var(--muted); max-width:46em; margin-top:10px; }
+  .badge { display:inline-block; margin-top:18px; padding:8px 14px; background:#ecfdf5;
+    color:#059669; border:1px solid #a7f3d0; border-radius:999px; font-size:0.85rem; font-weight:600; }
+  section { padding:44px 0 6px; border-bottom:1px solid var(--line); }
+  section h2 { font-size:1.45rem; margin-bottom:6px; }
+  section p.lead { color:var(--muted); margin-bottom:18px; max-width:52em; }
+  .graph { background:var(--term-bg); color:var(--term-ink); border-radius:var(--radius);
+    padding:18px 20px; font-size:0.85rem; overflow-x:auto; white-space:pre; line-height:1.8; }
+  .graph b { color:#2dd4bf; font-weight:700; }
+  .player { display:grid; grid-template-columns:1.25fr 1fr; gap:16px; }
+  @media (max-width:760px){ .player { grid-template-columns:1fr; } }
+  .term { background:var(--term-bg); color:var(--term-ink); border-radius:var(--radius);
+    padding:16px 18px; min-height:300px; font-size:0.8rem; line-height:1.7;
+    overflow-x:auto; white-space:pre-wrap; word-break:break-word; }
+  .term .dim{color:var(--term-dim);} .term .fail{color:#fbbf24;} .term .fix{color:#34d399;}
+  .term .win{color:#34d399;font-weight:700;} .term .price{color:#f87171;}
+  .explain { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; font-size:0.92rem; }
+  .explain .step-name { font-weight:700; color:var(--teal); font-size:0.8rem; letter-spacing:0.06em; }
+  .explain h3 { margin:4px 0 8px; font-size:1.05rem; }
+  .controls { display:flex; gap:8px; margin-top:14px; align-items:center; flex-wrap:wrap; }
+  .controls button { font:inherit; padding:8px 18px; border-radius:8px;
+    border:1px solid var(--line); background:var(--bg); cursor:pointer; font-weight:600; }
+  .controls button.primary { background:var(--teal); color:#fff; border-color:var(--teal); }
+  .controls button:disabled { opacity:0.4; cursor:default; }
+  .controls .where { color:var(--muted); font-size:0.85rem; margin-left:auto; }
+  .quotenote { font-size:0.8rem; color:var(--muted); margin-top:10px; }
+  .chart { margin-top:8px; text-align:center; }
+  .chart img { max-width:100%; border:1px solid var(--line); border-radius:var(--radius); }
+  .chart p { font-size:0.8rem; color:var(--muted); margin-top:6px; }
+  .honest { background:#fffbeb; border:1px solid #fde68a; border-radius:var(--radius);
+    padding:22px 24px; max-width:56em; margin-top:8px; }
+  .honest h3 { color:var(--amber); font-size:1rem; margin-bottom:8px; }
+  .honest p { font-size:0.92rem; }
+  footer { padding:34px 0 60px; color:var(--muted); font-size:0.85rem; }
+  a { color:var(--teal); }
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <h1><span>memory-repair-lab</span> — the model never learns; the notes do</h1>
+  <p class="tag">A memory-repair loop over a markdown agent wiki: failures are filed as
+  typed notes, repairs cite the failure that motivated them, and generations are
+  re-measured against a <b>held-out split sealed before generation zero</b> — with a
+  placebo arm, a regression gate, and a Goodhart demonstration shipped on purpose.</p>
+  <div class="badge">✓ every measured number on this page regenerates in CI with zero API keys</div>
+</div></header>
+
+<section><div class="wrap">
+  <h2>The agentic graph</h2>
+  <p class="lead">Each node a role, each edge an artifact you can open in an editor.
+  The placebo arm runs with the failure-record edge <b>cut</b>.</p>
+  <div class="graph"><b>MEMORY</b> (wiki notes) --index--&gt; <b>EVALUATOR</b> --misses--&gt; <b>FAILURE RECORDS</b>
+<b>FAILURE RECORDS</b> --citations--&gt; <b>REPAIRER</b> --candidate edits--&gt; <b>GATES</b>
+<b>GATES</b> (regression replay + citation check) --accepted diffs--&gt; <b>MEMORY</b></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>One generation, replayed</h2>
+  <p class="lead">These lines are quoted verbatim from the demo's streamed output —
+  the same pipeline CI regenerates on every push.</p>
+  <div class="player">
+    <div class="term" id="termOut"></div>
+    <div>
+      <div class="explain" id="explainBox"></div>
+      <div class="controls">
+        <button id="btnPrev" type="button">← Back</button>
+        <button id="btnNext" type="button" class="primary">Next →</button>
+        <button id="btnReset" type="button">Restart</button>
+        <span class="where" id="whereAmI"></span>
+      </div>
+      <p class="quotenote">Verbatim from <code>python -m repairlab demo</code>; condensed between beats.</p>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The four arms</h2>
+  <div class="chart">
+    <img src="../report/generations.svg" alt="held-out recall per arm with index token cost beneath each bar"
+         onerror="this.parentElement.querySelector('p').textContent='Chart: see report/generations.svg in the repository.'; this.remove()">
+    <p>The disclaimer lives inside the SVG: “scripted repairer — proves the loop and
+    the failure signal, never model capability”.</p>
+  </div>
+  <p class="lead" style="margin-top:16px">Held-out recall (pinned by tests):
+  frozen gen-0 <b>8/10</b> → repair arm <b>10/10</b>; the blind placebo arm, same
+  budget, stays at <b>8/10</b> — the failure signal, not the editing, does the work.
+  The Goodhart bloat arm also reaches 10/10 but pays for it on the index, its price
+  printed beside its gain.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>What this does NOT show</h2>
+  <div class="honest">
+    <h3>The loop is proven; reflection is not</h3>
+    <p>The repairer is a deterministic rule reading failure records and note bodies —
+    never the held-out questions (a test enforces the wall). Gains are upper bounds on
+    author-labeled fixtures; “recursive” in the strict sense — repair policies that are
+    themselves notes under repair — is Loop 2, documented future work, not marketed
+    until it exists in code. The weights never change; every gain is a diffable text
+    artifact in <code>git log -p</code>.</p>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  MIT licensed · <a href="https://github.com/LZBiala/memory-repair-lab">source &amp; README</a> ·
+  parent memory layer: <a href="https://github.com/LZBiala/wiki-memory-lab">wiki-memory-lab</a> ·
+  static file in <code>docs/</code> — no build system, no external requests.
+</div></footer>
+
+<script>
+"use strict";
+const BEATS = [
+  { c: "dim", line: "GEN 0: repair-visible 8/10; held-out 8/10", name: "GENERATION ZERO",
+    h: "Two notes cannot be found", e: "The wiki holds two notes with lazy hooks ('assorted notes', 'more notes') — the scorer gets nothing from them, in either task phrasing." },
+  { c: "fail", line: "FAILURE FILED: fail-t09 — retrieval miss on town-history (task t09)", name: "FAILURE RECORD",
+    h: "The miss becomes a typed note", e: "Filed in the same auditable wiki format as the memory itself: class, task, target, what was observed. The food for repair lives in the medium it repairs." },
+  { c: "dim", line: "HELD-OUT WALL: audited — no held-out phrasing in repairer input", name: "THE WALL",
+    h: "The envelope stays sealed", e: "A test walks every string the repairer consumed and proves no held-out phrasing leaked in. Gains must come from better metadata, not memorized questions." },
+  { c: "fix", line: "REPAIR ACCEPTED: town-history — hook 'assorted notes' carried no retrievable signal; rewritten from the note's own first line [cites fail-t09]", name: "CITED REPAIR",
+    h: "Every fix names its failure", e: "The new hook is derived from the note's own body — content, not the visible question. The ledger refuses any edit without a reason AND a citation." },
+  { c: "win", line: "GEN 1 (repair): repair-visible 10/10; held-out 10/10", name: "★ HELD-OUT GAIN",
+    h: "The sealed quiz agrees", e: "Both previously-unfindable notes now retrieve under phrasings the repairer never saw. The wiki improved; the model did not." },
+  { c: "dim", line: "GEN 1 (placebo, blind, same budget): held-out 8/10", name: "THE PLACEBO",
+    h: "Same budget, no signal, no gain", e: "Edits computed without reading failure records fix nothing — separating 'the failure signal helps' from 'any editing helps'. The control no self-improving-agent demo usually ships." },
+  { c: "price", line: "GEN 1 (goodhart bloat): held-out 10/10 at index 215 tok (repair arm: 185 tok)", name: "THE GOODHART DEMO",
+    h: "Gaming recall has a visible price", e: "Stuff every hook with the full note body and recall maxes out — while the index balloons. Committed and measured on purpose: a chart that can only go up is an advertisement." },
+  { c: "dim", line: "STOP: no remaining repair-visible failures after generation 1", name: "THE STOP RULE",
+    h: "Loops terminate, with reasons", e: "The generation loop halts and prints why in the ledger. A self-improvement loop without a stop condition is a bill without a ceiling." },
+];
+const termOut = document.getElementById("termOut");
+const explainBox = document.getElementById("explainBox");
+const whereAmI = document.getElementById("whereAmI");
+const btnPrev = document.getElementById("btnPrev");
+const btnNext = document.getElementById("btnNext");
+const btnReset = document.getElementById("btnReset");
+let pos = 0;
+function render() {
+  let html = '<span class="dim">LOOP: scripted evaluator/repairer — deterministic, zero API keys; the model never learns, the notes do</span>\n';
+  for (let i = 0; i < pos; i++) {
+    const b = BEATS[i];
+    html += (b.c ? `<span class="${b.c}">` : "") + escapeHtml(b.line) + (b.c ? "</span>" : "") + "\n";
+  }
+  termOut.innerHTML = html;
+  if (pos === 0) {
+    explainBox.innerHTML = `<div class="step-name">READY</div><h3>Press Next to replay the generation</h3><p>Eight beats: the misses, the filings, the wall, the cited fixes, the sealed-quiz verdict, the placebo, the Goodhart price, and the stop.</p>`;
+  } else {
+    const b = BEATS[pos - 1];
+    explainBox.innerHTML = `<div class="step-name">${b.name}</div><h3>${b.h}</h3><p>${b.e}</p>`;
+  }
+  whereAmI.textContent = `${pos} / ${BEATS.length}`;
+  btnPrev.disabled = pos === 0;
+  btnNext.disabled = pos === BEATS.length;
+}
+btnNext.addEventListener("click", () => { if (pos < BEATS.length) { pos++; render(); } });
+btnPrev.addEventListener("click", () => { if (pos > 0) { pos--; render(); } });
+btnReset.addEventListener("click", () => { pos = 0; render(); });
+function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+render();
+</script>
+</body>
+</html>
