@@ -133,6 +133,27 @@ docs/             the interactive walkthrough page
 CI: pytest → hygiene gate → full regeneration → `git diff --exit-code`,
 Windows + Linux, pinned Python, zero secrets.
 
+## Field notes (2026)
+
+In 2026 vocabulary the placebo arm is a counterfactual baseline, and the
+sealed held-out re-measurement speaks to the field's "Oracle ceiling"
+concern — correct retrieval does not guarantee correct behavior. Public
+surveys of memory frameworks (further reading:
+[a survey of agent memory frameworks](https://www.graphlit.com/blog/survey-of-ai-agent-memory-frameworks))
+show controlled repair trials remain rare; this repo is a minimal,
+fully-regenerable instance.
+
+## Roadmap
+
+Future work — stated as such, none of it in code yet:
+
+- **Oracle-ceiling experiment:** measure whether repaired notes change
+  downstream *actions*, not just retrieval hits. Any live-model runs will be
+  published as a separate, labeled study with k-run variance — never inside
+  the CI-gated claims above.
+- **Pre/post context evals:** lint and clarity checks around each repair, so
+  repair quality is instrumented, not assumed.
+
 ## License
 
 MIT.
