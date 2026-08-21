@@ -8,9 +8,9 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-AUTOGEN_BEGIN = "<!-- AUTOGEN:BEGIN — rendered by report.py from metrics.jsonl; do not edit by hand -->"
+AUTOGEN_BEGIN = "<!-- AUTOGEN:BEGIN - rendered by report.py from metrics.jsonl; do not edit by hand -->"
 AUTOGEN_END = "<!-- AUTOGEN:END -->"
-DISCLAIMER = "scripted repairer — proves the loop and the failure signal, never model capability"
+DISCLAIMER = "scripted repairer - proves the loop and the failure signal, never model capability"
 
 _COLORS = {"gen0-frozen": "#6b7280", "repair": "#0f766e", "placebo": "#b45309", "goodhart-bloat": "#b91c1c"}
 
@@ -44,7 +44,7 @@ def _arm(metrics: Metrics, arm: str, split: str) -> dict[str, object]:
 
 def render_generations_svg(metrics: Metrics) -> str:
     """Held-out recall per arm (bars) with each arm's index token cost printed
-    under it — the Goodhart arm's gain and its price share one frame."""
+    under it - the Goodhart arm's gain and its price share one frame."""
     arms = ["gen0-frozen", "repair", "placebo", "goodhart-bloat"]
     width, height = 760, 320
     left, right, top, bottom = 70, 30, 56, 96
@@ -56,7 +56,7 @@ def render_generations_svg(metrics: Metrics) -> str:
         f'viewBox="0 0 {width} {height}" font-family="monospace" font-size="12">',
         f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
         f'<text x="{left}" y="22" font-size="14" fill="#111111">'
-        "held-out recall per arm — with each arm's index cost printed beneath</text>",
+        "held-out recall per arm - with each arm's index cost printed beneath</text>",
     ]
     total = int(_arm(metrics, "gen0-frozen", "held_out")["total"])  # type: ignore[arg-type]
     for i, arm in enumerate(arms):
@@ -105,13 +105,13 @@ def render_claims(metrics: Metrics) -> str:
             "after one repair generation** | held-out phrasings sealed "
             "before generation zero (repair-visible = the fit split); a test asserts "
             "they never enter repairer input; frozen gen-0 replayed in the same run "
-            "| scripted repairer on author-labeled fixtures — proves the loop, an "
+            "| scripted repairer on author-labeled fixtures - proves the loop, an "
             "upper bound by construction, never model capability |"
         ),
         (
-            "| The failure signal — not editing — does the work "
+            "| The failure signal - not editing - does the work "
             f"| **placebo arm (same edit budget, blind): {pla['hits']}/{pla['total']} "
-            "— unchanged from gen-0** | identical budget; placebo edits computed "
+            "- unchanged from gen-0** | identical budget; placebo edits computed "
             "without reading failure records | one corpus, one deterministic churn "
             "rule; the arm separates signal from motion, nothing more |"
         ),
@@ -135,7 +135,7 @@ def render_claims(metrics: Metrics) -> str:
             f"| One repair generation, stated as such | **stop label: "
             f"{s['stop_reason']}** | the demo runs exactly ONE repair pass by "
             "construction; the label distinguishes done from budget-exhausted | "
-            "'termination' here is structural, not an enforced property — a real "
+            "'termination' here is structural, not an enforced property - a real "
             "multi-generation loop with a K-cycle no-gain stop is Loop 2 work |"
         ),
     ]

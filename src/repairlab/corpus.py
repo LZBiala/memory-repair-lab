@@ -4,7 +4,7 @@ This repo is the control loop that closes over the memory layer of its parent
 project (wiki-memory-lab). The substrate here is deliberately minimal and
 re-implemented fresh: one note per concept with strict two-field frontmatter
 plus a kind marker, a one-line-per-note index, and the same dumb-on-purpose
-lexical scorer family (name words double, hook words single, no stemming) —
+lexical scorer family (name words double, hook words single, no stemming) -
 so a lazy hook fails retrieval for a reason anyone can read.
 """
 from __future__ import annotations
@@ -96,7 +96,7 @@ def score(task_text: str, note: Note) -> int:
 
 def recall_names(task_text: str, notes: dict[str, Note]) -> list[str]:
     """Top-k memory-note names: score desc, then name asc. Failure notes are
-    never retrieval candidates — the loop's bookkeeping must not pollute the
+    never retrieval candidates - the loop's bookkeeping must not pollute the
     memory it repairs."""
     scored = [
         (score(task_text, n), name)
@@ -114,7 +114,7 @@ def index_text(notes: dict[str, Note]) -> str:
     lines = ["# index", ""]
     for name in sorted(notes):
         if notes[name].kind == "memory":
-            lines.append(f"- [[{name}]] — {notes[name].hook}")
+            lines.append(f"- [[{name}]] - {notes[name].hook}")
     return "\n".join(lines) + "\n"
 
 

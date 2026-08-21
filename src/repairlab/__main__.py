@@ -1,4 +1,4 @@
-"""CLI: `python -m repairlab demo` — the whole loop, from clean state, no keys.
+"""CLI: `python -m repairlab demo` - the whole loop, from clean state, no keys.
 
 Streams the story: generation-0 evaluation → misses filed as failure notes →
 cited repairs through the regression gate (plus the blind placebo arm and the
@@ -42,7 +42,7 @@ METRICS = REPO_ROOT / "metrics.jsonl"
 README = REPO_ROOT / "README.md"
 
 BANNER = (
-    "LOOP: scripted evaluator/repairer — deterministic, zero API keys; "
+    "LOOP: scripted evaluator/repairer - deterministic, zero API keys; "
     "the model never learns, the notes do"
 )
 
@@ -72,7 +72,7 @@ def _write(path: Path, text: str) -> None:
 
 def demo(quiet: bool) -> int:
     if not FIXTURE.exists():
-        print(f"repairlab demo needs a source checkout — missing {FIXTURE}", file=sys.stderr)
+        print(f"repairlab demo needs a source checkout - missing {FIXTURE}", file=sys.stderr)
         return 1
     emit = (lambda _line: None) if quiet else print
     emit(BANNER)
@@ -106,20 +106,20 @@ def demo(quiet: bool) -> int:
         failures.append(completed)
         note = failure_note(completed)
         _write(RUNS_DIR / "failures" / f"{note.name}.md", note.render())
-        emit(f"FAILURE FILED: {note.name} — {note.hook}")
+        emit(f"FAILURE FILED: {note.name} - {note.hook}")
 
     edits = repair(notes, failures)
     repairer_inputs = [f.question + " " + f.observed for f in failures] + [
         notes[f.target].body for f in failures
     ]
     holdout_isolation_audit(repairer_inputs, tasks)
-    emit("HELD-OUT WALL: audited — no held-out phrasing in repairer input")
+    emit("HELD-OUT WALL: audited - no held-out phrasing in repairer input")
 
     repaired, accepted, reverted = regression_gate(notes, edits, tasks)
     for e in accepted:
-        emit(f"REPAIR ACCEPTED: {e.note} — {e.reason} [cites {e.citation}]")
+        emit(f"REPAIR ACCEPTED: {e.note} - {e.reason} [cites {e.citation}]")
     for e, why in reverted:
-        emit(f"REPAIR REVERTED: {e.note} — {why}")
+        emit(f"REPAIR REVERTED: {e.note} - {why}")
 
     mend_held = evaluate(repaired, tasks, "held_out", "repair")
     mend_visible = evaluate(repaired, tasks, "repair_visible", "repair")
@@ -174,7 +174,7 @@ def demo(quiet: bool) -> int:
 
     emit("")
     emit("Look around:")
-    emit("  wiki/                 the repaired memory (gen 1) — diff it against fixtures/corpus.json")
+    emit("  wiki/                 the repaired memory (gen 1) - diff it against fixtures/corpus.json")
     emit("  runs/failures/        every miss, filed as a typed note")
     emit("  runs/repair-ledger.jsonl  ACCEPT/REVERT/STOP, each with reason + citation")
     emit("  report/generations.svg    the four arms, gains and prices together")

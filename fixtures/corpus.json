@@ -1,6 +1,6 @@
 {
   "corpus": "milldale-memory",
-  "description": "Ten Milldale memory notes. Two carry deliberately lazy hooks (town-history: 'assorted notes'; civic-record: 'more notes') — the patients this loop exists to repair. Tasks come in PAIRS of phrasings: repair_visible (the loop may see its failures) and held_out (sealed before generation zero; the measurement). Ground-truth 'relevant' names the target note.",
+  "description": "Ten Milldale memory notes. Two carry deliberately lazy hooks (town-history: 'assorted notes'; civic-record: 'more notes') - the patients this loop exists to repair. Tasks come in PAIRS of phrasings: repair_visible (the loop may see its failures) and held_out (sealed before generation zero; the measurement). Ground-truth 'relevant' names the target note.",
   "notes": [
     {"name": "bakery-hours", "hook": "Opening hours for the Milldale bakery on Main Street", "body": "Opens 7am weekdays at 21 Main Street.\nCloses 3pm. Saturday: 8am to 1pm."},
     {"name": "bike-repair", "hook": "The bike shop on Forge Alley: services and turnaround", "body": "Repairs with a two-day turnaround on Forge Alley.\nTubes and brake work done same day."},

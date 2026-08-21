@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>memory-repair-lab — the model never learns; the notes do</title>
+<title>memory-repair-lab - the model never learns; the notes do</title>
 <style>
   :root { --ink:#111827; --muted:#6b7280; --bg:#ffffff; --panel:#f8fafc; --line:#e5e7eb;
     --teal:#0f766e; --amber:#b45309; --red:#b91c1c; --term-bg:#0f172a; --term-ink:#e2e8f0;
@@ -56,10 +56,10 @@
 </head>
 <body>
 <header class="hero"><div class="wrap">
-  <h1><span>memory-repair-lab</span> — the model never learns; the notes do</h1>
+  <h1><span>memory-repair-lab</span> - the model never learns; the notes do</h1>
   <p class="tag">A memory-repair loop over a markdown agent wiki: failures are filed as
   typed notes, repairs cite the failure that motivated them, and generations are
-  re-measured against a <b>held-out split sealed before generation zero</b> — with a
+  re-measured against a <b>held-out split sealed before generation zero</b> - with a
   placebo arm, a regression gate, and a Goodhart demonstration shipped on purpose.</p>
   <div class="badge">✓ every measured number on this page regenerates in CI with zero API keys</div>
 </div></header>
@@ -75,7 +75,7 @@
 
 <section><div class="wrap">
   <h2>One generation, replayed</h2>
-  <p class="lead">These lines are quoted verbatim from the demo's streamed output —
+  <p class="lead">These lines are quoted verbatim from the demo's streamed output -
   the same pipeline CI regenerates on every push.</p>
   <div class="player">
     <div class="term" id="termOut"></div>
@@ -97,12 +97,12 @@
   <div class="chart">
     <img src="../report/generations.svg" alt="held-out recall per arm with index token cost beneath each bar"
          onerror="this.parentElement.querySelector('p').textContent='Chart: see report/generations.svg in the repository.'; this.remove()">
-    <p>The disclaimer lives inside the SVG: “scripted repairer — proves the loop and
+    <p>The disclaimer lives inside the SVG: “scripted repairer - proves the loop and
     the failure signal, never model capability”.</p>
   </div>
   <p class="lead" style="margin-top:16px">Held-out recall (pinned by tests):
   frozen gen-0 <b>8/10</b> → repair arm <b>10/10</b>; the blind placebo arm, same
-  budget, stays at <b>8/10</b> — the failure signal, not the editing, does the work.
+  budget, stays at <b>8/10</b> - the failure signal, not the editing, does the work.
   The Goodhart bloat arm also reaches 10/10 but pays for it on the index, its price
   printed beside its gain.</p>
 </div></section>
@@ -111,10 +111,10 @@
   <h2>What this does NOT show</h2>
   <div class="honest">
     <h3>The loop is proven; reflection is not</h3>
-    <p>The repairer is a deterministic rule reading failure records and note bodies —
+    <p>The repairer is a deterministic rule reading failure records and note bodies -
     never the held-out questions (a test enforces the wall). Gains are upper bounds on
-    author-labeled fixtures; “recursive” in the strict sense — repair policies that are
-    themselves notes under repair — is Loop 2, documented future work, not marketed
+    author-labeled fixtures; “recursive” in the strict sense - repair policies that are
+    themselves notes under repair - is Loop 2, documented future work, not marketed
     until it exists in code. The weights never change; every gain is a diffable text
     artifact in <code>git log -p</code>.</p>
   </div>
@@ -123,26 +123,26 @@
 <footer><div class="wrap">
   MIT licensed · <a href="https://github.com/LZBiala/memory-repair-lab">source &amp; README</a> ·
   parent memory layer: <a href="https://github.com/LZBiala/wiki-memory-lab">wiki-memory-lab</a> ·
-  static file in <code>docs/</code> — no build system, no external requests.
+  static file in <code>docs/</code> - no build system, no external requests.
 </div></footer>
 
 <script>
 "use strict";
 const BEATS = [
   { c: "dim", line: "GEN 0: repair-visible 8/10; held-out 8/10", name: "GENERATION ZERO",
-    h: "Two notes cannot be found", e: "The wiki holds two notes with lazy hooks ('assorted notes', 'more notes') — the scorer gets nothing from them, in either task phrasing." },
-  { c: "fail", line: "FAILURE FILED: fail-t09 — retrieval miss on town-history (task t09)", name: "FAILURE RECORD",
+    h: "Two notes cannot be found", e: "The wiki holds two notes with lazy hooks ('assorted notes', 'more notes') - the scorer gets nothing from them, in either task phrasing." },
+  { c: "fail", line: "FAILURE FILED: fail-t09 - retrieval miss on town-history (task t09)", name: "FAILURE RECORD",
     h: "The miss becomes a typed note", e: "Filed in the same auditable wiki format as the memory itself: class, task, target, what was observed. The food for repair lives in the medium it repairs." },
-  { c: "dim", line: "HELD-OUT WALL: audited — no held-out phrasing in repairer input", name: "THE WALL",
+  { c: "dim", line: "HELD-OUT WALL: audited - no held-out phrasing in repairer input", name: "THE WALL",
     h: "The envelope stays sealed", e: "A test walks every string the repairer consumed and proves no held-out phrasing leaked in. Gains must come from better metadata, not memorized questions." },
-  { c: "fix", line: "REPAIR ACCEPTED: town-history — hook 'assorted notes' carried no retrievable signal; rewritten from the note's own first line [cites fail-t09]", name: "CITED REPAIR",
-    h: "Every fix names its failure", e: "The new hook is derived from the note's own body — content, not the visible question. The ledger refuses any edit without a reason AND a citation." },
+  { c: "fix", line: "REPAIR ACCEPTED: town-history - hook 'assorted notes' carried no retrievable signal; rewritten from the note's own first line [cites fail-t09]", name: "CITED REPAIR",
+    h: "Every fix names its failure", e: "The new hook is derived from the note's own body - content, not the visible question. The ledger refuses any edit without a reason AND a citation." },
   { c: "win", line: "GEN 1 (repair): repair-visible 10/10; held-out 10/10", name: "★ HELD-OUT GAIN",
     h: "The sealed quiz agrees", e: "Both previously-unfindable notes now retrieve under phrasings the repairer never saw. The wiki improved; the model did not." },
   { c: "dim", line: "GEN 1 (placebo, blind, same budget): held-out 8/10", name: "THE PLACEBO",
-    h: "Same budget, no signal, no gain", e: "Edits computed without reading failure records fix nothing — separating 'the failure signal helps' from 'any editing helps'. The control no self-improving-agent demo usually ships." },
+    h: "Same budget, no signal, no gain", e: "Edits computed without reading failure records fix nothing - separating 'the failure signal helps' from 'any editing helps'. The control no self-improving-agent demo usually ships." },
   { c: "price", line: "GEN 1 (goodhart bloat): held-out 10/10 at index 215 tok (repair arm: 185 tok)", name: "THE GOODHART DEMO",
-    h: "Gaming recall has a visible price", e: "Stuff every hook with the full note body and recall maxes out — while the index balloons. Committed and measured on purpose: a chart that can only go up is an advertisement." },
+    h: "Gaming recall has a visible price", e: "Stuff every hook with the full note body and recall maxes out - while the index balloons. Committed and measured on purpose: a chart that can only go up is an advertisement." },
   { c: "dim", line: "STOP: no remaining repair-visible failures after generation 1", name: "THE STOP RULE",
     h: "Loops terminate, with reasons", e: "The generation loop halts and prints why in the ledger. A self-improvement loop without a stop condition is a bill without a ceiling." },
 ];
@@ -154,7 +154,7 @@ const btnNext = document.getElementById("btnNext");
 const btnReset = document.getElementById("btnReset");
 let pos = 0;
 function render() {
-  let html = '<span class="dim">LOOP: scripted evaluator/repairer — deterministic, zero API keys; the model never learns, the notes do</span>\n';
+  let html = '<span class="dim">LOOP: scripted evaluator/repairer - deterministic, zero API keys; the model never learns, the notes do</span>\n';
   for (let i = 0; i < pos; i++) {
     const b = BEATS[i];
     html += (b.c ? `<span class="${b.c}">` : "") + escapeHtml(b.line) + (b.c ? "</span>" : "") + "\n";

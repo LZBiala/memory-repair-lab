@@ -1,4 +1,4 @@
-"""The repair loop — an agentic control graph over the memory substrate.
+"""The repair loop - an agentic control graph over the memory substrate.
 
 The graph, drawn in prose (each node is a role, each edge an artifact):
 
@@ -8,11 +8,11 @@ The graph, drawn in prose (each node is a role, each edge an artifact):
 
 Roles are structurally separated, family-style: the evaluator only scores,
 the repairer only proposes (and may read ONLY failure records and target
-note bodies — a test asserts held-out task text never enters its input),
+note bodies - a test asserts held-out task text never enters its input),
 and the gates alone decide what lands. Every accepted edit carries a written
 reason plus the id of the failure record that motivated it; the ledger
 refuses anything less. The placebo arm receives the same edit budget with
-the failure-record edge CUT — separating "the failure signal helps" from
+the failure-record edge CUT - separating "the failure signal helps" from
 "any editing helps".
 
 The model never learns; the notes do.
@@ -65,7 +65,7 @@ class RepairEdit:
     old_hook: str
     new_hook: str
     reason: str
-    citation: str  # failure_id — mandatory
+    citation: str  # failure_id - mandatory
 
 
 def evaluate(notes: dict[str, Note], tasks: list[dict[str, str]], split: str, arm: str) -> ArmEval:
@@ -129,7 +129,7 @@ def repair(
     notes: dict[str, Note], failures: list[FailureRecord]
 ) -> list[RepairEdit]:
     """The scripted repairer: for each failure, rewrite the target note's hook
-    FROM THE NOTE'S OWN BODY (content-derived, not task-derived — so held-out
+    FROM THE NOTE'S OWN BODY (content-derived, not task-derived - so held-out
     phrasings can only be won by genuinely better metadata, not by echoing
     the visible question). Deterministic; one edit per failure."""
     edits = []
@@ -156,11 +156,11 @@ def repair(
 
 
 def placebo_edits(notes: dict[str, Note], budget: int) -> list[RepairEdit]:
-    """The churn arm: SAME edit budget, computed blind — no failure records in
+    """The churn arm: SAME edit budget, computed blind - no failure records in
     sight. Deterministic rule: rewrite the hooks of the alphabetically first
     `budget` memory notes to a generic template."""
     # Same EDIT RULE as the repair arm (first-line rewrite) so the only
-    # difference between arms is the failure signal choosing the targets —
+    # difference between arms is the failure signal choosing the targets -
     # not a weak rule losing to a strong one.
     targets = sorted(n for n, note in notes.items() if note.kind == "memory")[:budget]
     return [
@@ -215,7 +215,7 @@ def regression_gate(
     # The baseline is RECOMPUTED after every acceptance: an edit must protect
     # everything passing AT THAT MOMENT, including tasks an earlier edit in
     # this same batch just fixed. (A batch-start-only baseline let later
-    # collateral edits re-break interim fixes — caught by independent review.)
+    # collateral edits re-break interim fixes - caught by independent review.)
     current = dict(before)
     baseline = {
         r.task_id: r.hit

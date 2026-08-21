@@ -93,7 +93,7 @@ class TestPlaceboBlindness:
 class TestRegressionGate:
     def test_gate_reverts_a_breaking_edit(self) -> None:
         # The probe note's NAME shares no words with the task, so retrieval
-        # depends entirely on the hook — the exact situation where a bad
+        # depends entirely on the hook - the exact situation where a bad
         # repair can regress a previously-passing task.
         corpus = {
             "vendor-nine": Note("vendor-nine", "the blue lantern shop on Mill Lane", "memory", "Sells lanterns."),
@@ -146,7 +146,7 @@ def run_demo(workdir: Path) -> None:
     shutil.copytree(REPO / "src", workdir / "src")
     shutil.copytree(REPO / "fixtures", workdir / "fixtures")
     shutil.copy(REPO / "README.md", workdir / "README.md")
-    result = subprocess.run(  # noqa: S603 — running our own module under test
+    result = subprocess.run(  # noqa: S603 - running our own module under test
         [sys.executable, "-m", "repairlab", "demo", "--quiet"],
         cwd=workdir, env={**os.environ, "PYTHONPATH": str(workdir / "src")},
         capture_output=True, text=True, check=False,
@@ -238,7 +238,7 @@ class TestReadmePinned:
 
 class TestHygieneGate:
     def test_repo_passes_its_own_gate(self) -> None:
-        result = subprocess.run(  # noqa: S603 — running our own tool under test
+        result = subprocess.run(  # noqa: S603 - running our own tool under test
             [sys.executable, str(REPO / "tools" / "blocklist_check.py")],
             capture_output=True, text=True, check=False,
         )

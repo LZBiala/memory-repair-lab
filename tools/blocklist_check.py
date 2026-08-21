@@ -10,7 +10,7 @@ on every CI push. Two layers:
 
 2. HASHED TERMS: a salted-SHA-256 list of banned vocabulary. The repo is a
    clean-room project; the list bans the author's private-workspace vocabulary
-   and an unrelated fixture domain — publishing the words themselves would
+   and an unrelated fixture domain - publishing the words themselves would
    defeat the purpose, so only their hashes are committed. Content and file
    names are tokenized and each token (and every contiguous hyphen-joined
    sub-sequence of it) is hashed and compared.
@@ -141,7 +141,7 @@ def scan(root: Path) -> list[str]:
         try:
             text = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError) as exc:
-            hits.append(f"{rel}: UNREADABLE ({type(exc).__name__}) — gate fails closed")
+            hits.append(f"{rel}: UNREADABLE ({type(exc).__name__}) - gate fails closed")
             continue
         for lineno, line in enumerate(text.splitlines(), start=1):
             match = GENERIC_PATTERNS.search(line)
@@ -156,7 +156,7 @@ def main() -> int:
     root = Path(__file__).resolve().parent.parent
     hits = scan(root)
     if hits:
-        print(f"BLOCKLIST: {len(hits)} hit(s) — the build fails until they are gone.")
+        print(f"BLOCKLIST: {len(hits)} hit(s) - the build fails until they are gone.")
         for hit in hits:
             print(f"  {hit}")
         return 1
