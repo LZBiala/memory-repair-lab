@@ -4,10 +4,11 @@
 
 **The model never learns; the notes do.** A memory-repair loop built on the
 memory layer of [wiki-memory-lab](https://github.com/LZBiala/wiki-memory-lab):
-retrieval failures are filed as typed notes, a repair pass rewrites hooks —
-every edit citing the failure record that motivated it — and generations are
-re-measured against a **held-out task split sealed before generation zero**,
-with a placebo arm, a regression gate, and a published Goodhart demonstration.
+when a note can't be found, that miss is written down; a repair pass
+relabels notes, each fix naming the miss that caused it; and results are
+re-scored on a quiz **sealed in an envelope before any fixing began** —
+plus a sugar-pill (placebo) arm, a re-check gate, and a published demo of
+how the score can be gamed.
 
 > **Every measured number below regenerates in CI with zero API keys — if a
 > claim drifts, the build fails.** (`pytest` → hygiene gate → full run →
@@ -27,10 +28,20 @@ before the fixing started**, so they can't fool themselves. The cook never
 gets smarter — the box gets easier to use, every fix has its reason stapled to
 it, and the envelope keeps everyone honest.
 
+## In plain English
+
+The mistake-cards above, scored: finding notes went from 8 out of 10 to 10 out
+of 10 after one repair round, graded on the quiz sealed before any fixing
+began. The proof it wasn't luck: a sugar-pill run made the same number of
+edits without reading the mistake-cards and stayed at 8 out of 10 — the
+failure reports did the work, not the busywork. Every accepted fix names the
+exact mistake that caused it, and the repo says out loud what it does not
+prove.
+
 ## The agentic graph
 
-This is a multi-role control loop over a memory substrate — each node a role,
-each edge an artifact you can open in an editor:
+A few separate jobs take turns tending one shared box of notes — and every
+hand-off between them is a plain file you can open in an editor:
 
 ```
 MEMORY (wiki notes) --index--> EVALUATOR --misses--> FAILURE RECORDS
@@ -69,7 +80,7 @@ can only be won by genuinely better metadata). One generation later, both
 phrasings retrieve it. The fix is a one-line diff citing `fail-t09`, in the
 open, in the ledger.
 
-## Claims, treated like SLOs
+## Claims, retested on every change (SLO-style)
 
 Rendered from `metrics.jsonl` by `report.py` — no measured number below is
 typed by hand, and CI fails if regeneration disagrees.
@@ -152,9 +163,9 @@ Windows + Linux, pinned Python, zero secrets.
 
 ## Field notes (2026)
 
-In 2026 vocabulary the placebo arm is a counterfactual baseline, and the
-sealed held-out re-measurement speaks to the field's "Oracle ceiling"
-concern — correct retrieval does not guarantee correct behavior. Public
+In research terms the placebo arm is a control group, and the sealed quiz
+answers a known worry (the "Oracle ceiling"): finding the right note does
+not guarantee acting on it correctly. Public
 surveys of memory frameworks (further reading:
 [a survey of agent memory frameworks](https://www.graphlit.com/blog/survey-of-ai-agent-memory-frameworks))
 show controlled repair trials remain rare; this repo is a minimal,
