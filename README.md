@@ -88,6 +88,23 @@ typed by hand, and CI fails if regeneration disagrees.
 
 Regenerate everything yourself: `python -m repairlab demo --quiet && git diff`.
 
+## Verification the worker cannot skip
+
+Three gates stand between a candidate edit and the wiki: the regression
+replay (every accepted edit re-runs the full suite), the citation check (an
+edit that cannot name the failure record that motivated it does not land),
+and the sealed held-out wall (the re-measurement uses phrasings frozen
+before generation zero). None of them ask the repairer to be trustworthy —
+they ask it to survive being checked. That is the pattern worth naming:
+build the tools that verify the work, rather than trust the worker to have
+done it well. The 8/10 → 10/10 held-out gain above is what one repair pass
+looks like once it has to clear all three gates. The placebo arm is the
+control that tells you what the gates alone are worth — same budget, same
+churn, failure records withheld, and it stays flat at 8/10: the placebo arm
+shows the FAILURE SIGNAL, not the churn, carries the value. The gates do not
+manufacture that gain; they only make sure nothing gets credit for it that
+did not earn it.
+
 ## What this does NOT show
 
 The repairer is a deterministic rule. A scripted repairer fixing planted-style
