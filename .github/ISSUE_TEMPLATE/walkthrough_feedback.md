@@ -9,7 +9,7 @@ about: Feedback on the interactive walkthrough in docs/
 
 ## What convinced you
 
-<!-- The part (if any) where the claim actually landed — and why. -->
+<!-- The part (if any) where the claim actually landed - and why. -->
 
 ## What would you test next
 
