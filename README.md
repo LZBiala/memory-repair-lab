@@ -10,69 +10,6 @@ re-scored on a quiz **sealed in an envelope before any fixing began** -
 plus a sugar-pill (placebo) arm, a re-check gate, and a published demo of
 how the score can be gamed.
 
-## What this is
-
-A small Python program that gives a scripted helper (no language model anywhere in it) a memory made of plain text files: one note per topic, plus an index with one line per note. It replays 8 scripted sessions of errands in a made-up town (~20 tasks), counts what reading that memory costs, and checks whether its filing rules fire when they should. It measures the filing system, not any model.
-
-## Why it matters
-
-AI assistants either forget everything between chats or reread their whole diary before every answer. Rereading costs money, because providers bill for every piece of text sent in. And when the memory is stored in a form a person cannot open and read, nobody can check what the assistant believes or why it dropped something. This repo counts whether reading an index and a few notes costs less than rereading everything, shows a memory small enough that it does not, and makes every deletion leave a written reason.
-
-## Quickstart (three commands, no keys)
-
-```
-git clone https://github.com/LZBiala/wiki-memory-lab && cd wiki-memory-lab
-pip install -e .
-python -m wikimemlab demo
-```
-
-No API keys (no account with any AI service). The program needs nothing outside Python's standard library; its dependency list in `pyproject.toml` is empty. The demo prints each session as it runs, then points you at `wiki/` (the memory, plain markdown), `runs/` (the session transcripts, every memory operation with its written reason), `report/hero.svg` (the token chart) and `metrics.jsonl` (every published number). Three runs timed by hand on one Windows machine each finished in under a second; that is a stopwatch reading, not a benchmark, and the repo does not check it. What the repo does check: a fresh run leaves every committed file unchanged, byte for byte (`git diff --exit-code`, run by CI, the automated check on every push, on Windows and Linux).
-
-## How it works
-
-Picture a recipe box with an index card on top. Each recipe is a note. The card lists every note's title and a one-line hook (its summary). At the start of a session the helper reads only the card. For each question it counts the exact words each card line shares with the question (a word from the note's title counts double), keeps the lines scoring at least 2, and pulls at most three notes. Exact words only: "park" does not match "parking". A new fact joins an existing note when the two titles match after lowercasing and hyphenating (extend-before-create); a paraphrased title creates a duplicate instead, and the harness (the test rig around the helper) counts that as an error rather than hiding it. A note shown to be wrong is archived only with a written reason (prune); the code refuses an empty one. A note neither created nor recalled for 5 sessions is archived automatically (decay).
-
-Here is what that looks like in a real transcript, quoted from `runs/milldale-session_06.md`, a generated file that a test checks against this excerpt word for word:
-
-```
-## task s6t3 - "Can I still catch the route 4 bus by the square tonight?"
-RECALL: bus-schedule (1 note(s) / 53 tokens)
-ANSWER: No - the town notice posted today says route 4 is discontinued; a new
-route 7 now runs from the square. [...]
-WRITE-BACK: CREATE walk-in-clinic-hours - same clinic as the existing note - a
-paraphrased title the exact matcher will miss, counted as false-CREATE
-[intended EXTEND - counted as false-CREATE]
-
-CORRECTION: PRUNE bus-schedule - contradicted by session 6 town notice: route 4 discontinued
-CORRECTION: CREATE bus-route-7 - replacement for pruned bus-schedule
-DECAY: ARCHIVE school-play - not created or recalled inside the decay window
-```
-
-The analogy holds in both directions. A big box makes the card worth reading first. A tiny box, where most questions need most recipes anyway, makes the card pure overhead. The numbers below show both.
-
-## In plain English: what the numbers mean
-
-A token is the unit AI providers bill by. This repo uses proxy tokens: characters divided by four, rounded up, a common rule of thumb and not any vendor's real count. The numbers below are copied by hand from the claims table further down; that table is regenerated from `metrics.jsonl` on every change, and CI fails the build if it drifts. If a number here ever disagrees with the table, the table is right.
-
-- Cost. Reading the index first and then only the matching notes cost 2236 proxy tokens over the 8 sessions; loading every note every session cost 3654. The ratio, 0.61, is the claim; the absolute counts are not, because they depend on how many notes exist and how many each question touches. Both runs read the same notes (the load-everything run replays the exact wiki that existed at the start of each session) with the same scripted helper, so this grades a loading rule, not a model.
-- Where it loses. On a separate 8-note mini corpus (corpus: the set of notes) built so its questions touch most of the notes, the method lost: 431 proxy tokens against 340 (ratio 1.27), measured at the last of its 2 sessions, the only one that reads memory. Published on purpose: the index is a fixed fee paid every session, and on a small memory where you need most notes anyway, that fee is pure loss.
-- Retrieval. Precision 0.95 and recall 0.95: of the 21 notes the helper pulled, 20 were on the author's list of which notes each question needs (precision); of the 21 notes on that list, 20 were pulled (recall). The one wrong pull is a parking note that shares words with a park question. The one miss is a note given a deliberately lazy hook, "assorted notes", to show what a bad hook costs. Both numbers are an upper bound by construction: the same author wrote the questions, the hooks, and the list, so they measure how well the author's hooks fit the author's questions, not how the method fares on text someone else wrote.
-- Filing rules. Counted from the operations log of one deterministic run (same input, same output, every time): 18 notes created, 1 extended, 2 pruned with a reason, 1 archived by decay, 21 recalls; 1 false-CREATE (the paraphrased duplicate in the transcript above) and 0 false-EXTENDs. This proves the harness enforces the rules and shows where the title matcher fails. It says nothing about whether a live model would follow the rules unprompted; the helper is scripted.
-
-## What it does not show
-
-The helper is scripted: its answers come from the fixture file (the script of sessions it replays) and its filing decisions follow rules. So this repo never publishes a "task completion" score, because here a task would count as done exactly when the right note was pulled, so a completion score would only restate the retrieval score. What the repo can measure honestly is the memory protocol itself: the token arithmetic, how well one-line hooks retrieve labeled notes, and whether the rules fire when they should, including the two ways the title matcher fails. Whether a live model would keep this discipline unprompted is untested here.
-
-## Try your own case
-
-Add a task to `fixtures/milldale/sessions.json` (each task has an id, a question, the notes it needs, the scripted answer, and any facts to file), rerun the demo, and read `runs/` and `metrics.jsonl`. Whichever way the numbers move, they get published. Before proposing the change, run the gate sequence in `CONTRIBUTING.md`: the test suite, `python tools/blocklist_check.py` (scans for private paths, email addresses, and a hashed list of banned words), the regeneration, and `git diff --exit-code`. One test pins the task count written in this README to the fixture, so that number must move with it, and the regenerated files are committed in the same change.
-
----
-
-## For engineers
-
-Everything below is the original technical README: the design, the measurements, and how to reproduce them.
-
 > **Every measured number below regenerates in CI with zero API keys - if a
 > claim drifts, the build fails.** (`pytest` → hygiene gate → full run →
 > `git diff --exit-code`, Windows and Linux.) The repairer is a deterministic
