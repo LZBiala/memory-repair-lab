@@ -10,6 +10,50 @@ re-scored on a quiz **sealed in an envelope before any fixing began** -
 plus a sugar-pill (placebo) arm, a re-check gate, and a published demo of
 how the score can be gamed.
 
+## What this is
+
+**The model never learns; the notes do.** A small Python program (no API keys, so no online service) scores how findable a folder of plain-text notes is under one fixed word-matching rule, files each miss as a note, relabels each missed note citing the miss, and re-scores on second question wordings the repair step never sees. The repairer is a script, not an AI model.
+
+## Why it matters
+
+The finder reads only a note's name and one-line label (its "hook"), so a hook like "assorted notes" gives the finder nothing to match. An AI model that "learns" from the miss buries the fix in billions of numbers nobody can read; here the fix is one text line in the version history, its reason beside it.
+
+## Try it in 60 seconds
+
+```
+git clone https://github.com/LZBiala/memory-repair-lab
+cd memory-repair-lab
+PYTHONPATH=src python -m repairlab demo
+```
+
+Needs Python 3.11+ and no packages. `PYTHONPATH=src` points Python at the code; in PowerShell: `$env:PYTHONPATH='src'; python -m repairlab demo`. Without it (or `pip install -e .`) Python reports "No module named repairlab".
+
+## How it works
+
+Picture a filing cabinet whose finder never opens a folder, only reads the tab: the note's name plus hook. It counts the words a question shares with the tab, skipping small words like "the" (name words count two, hook words one, no synonyms), and returns the top three scoring at least two. The town-history tab ("assorted notes") shares no word with either wording of its question, so it scores zero and never comes out.
+
+Each question is written twice; only the first wording reaches the repair step, the second only the grader. The loop scores the first wordings, files each miss as a failure record (which question, which note, what came out instead), rewrites each missed note's hook from the note's own first line citing the record, and undoes any edit that breaks a first wording that was passing. Then the second wordings are graded; a check fails the run if any appears, word for word, in what the repair step was fed.
+
+## The numbers, with their caveats
+
+Quotes are the repo's words; an "arm" is one run variant. Held-out hits (second wordings): 8/10 before repair, 10/10 after one pass - "an upper bound by construction, never model capability": the gains are the two planted lazy hooks on ten notes the author wrote, in one run that repeats byte for byte (no spread to report). Placebo arm (same rewrite rule, the two alphabetically first notes, blind to failures): 8/10, unchanged - "the arm separates signal from motion, nothing more"; a control by construction, not a randomized one. A gamed arm that stuffs every hook with its whole note also scores 10/10, but its tab list grows to 215 proxy tokens (characters divided by four) against the repair arm's 185; that growth is the only price the demo measures. All of these regenerate from the demo; only "CI passes on GitHub" is asserted here.
+
+## Where it loses
+
+A scripted repairer "proves nothing about any model's ability to reflect". Held-out gains "are upper bounds on author-labeled fixtures" (the hand-written notes and questions in `fixtures/corpus.json`) and say nothing about other note sets. The repo declines the word "recursive" (repair rules that are themselves repairable notes) until that exists in code, as Loop 2.
+
+## Try your own case
+
+Add a note with a lazy hook, and a question with two wordings only it answers, to `fixtures/corpus.json`; rerun the demo and read `runs/repair-ledger.jsonl`. The tests pin today's numbers and will trip on purpose; use a git branch.
+
+---
+
+---
+
+## For engineers
+
+Everything below is the original technical README: the design, the measurements, and how to reproduce them.
+
 > **Every measured number below regenerates in CI with zero API keys - if a
 > claim drifts, the build fails.** (`pytest` → hygiene gate → full run →
 > `git diff --exit-code`, Windows and Linux.) The repairer is a deterministic
